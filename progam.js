@@ -1,22 +1,22 @@
 /*
 
-  Escreva um programa que usa uma única operação síncrona de sistema de  
-  arquivos (filesystem) para ler e imprimir o número de novas linhas (\n)  
-  que ele contém no console (stdout), algo similar à executar cat file | wc  
-  -l.  
+  Escreva um programa que usa uma única operação assíncrona de sistema de  
+  arquivos para ler um arquivo e imprimir o número de novas linhas que ele  
+  contém no console (stdout), algo similar à executar cat file | wc -l.  
    
-  Todo o caminho até o arquivo à ser lido será fornecido como primeiro  
-  argumento da linha de comando.
+  O caminho completo até o arquivo à ser lido será fornecido como primeiro  
+  argumento da linha de comando. 
 
 */
 
 const fs = require("fs");
 
-const file = fs.readFileSync(process.argv[2])
+fs.readFile(process.argv[2], 'utf8', (err, data) => {
 
-// Passando 'utf8' como segundo argumento no readFileSync ele ja converte o conteúdo do arquivo em string
-fs.readFileSync(process.argv[2], 'utf8').split('\n').length - 1
+  if (err) {
+    console.log(err);
+  }
 
-const numberOfNewLines = file.toString().split("\n").length - 1
-
-console.log(numberOfNewLines);
+  //number of new lines
+  console.log(data.split("\n").length - 1)
+})

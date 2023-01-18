@@ -15,6 +15,7 @@
   Você precisa, obrigatoriamente, usar I/O assíncrono.   
 
 */
+
 const fs = require("fs");
 const { log } = require("console");
 const { extname } = require("path");

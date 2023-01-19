@@ -1,14 +1,12 @@
 /*
 
-  Escreva um  servidor HTTP que entregue o mesmo arquivo de texto para cada  
-  solicitação recebida.  
+  Escreva um servidor HTTP que recebe apenas requisições de POST e converte  
+  os caracteres no corpo da requisição para caixa-alta e retorna-os para o  
+  cliente.  
    
-  O servidor deve escutar na porta fornecida pelo primeiro argumento do seu  
-  programa.  
-   
-  Será fornecida a localização do arquivo para servir como segundo argumento  
-  da linha de comando. Você deve usar o método fs.createReadStream() para a  
-  stream do conteúdo do arquivo para resposta. 
+  Seu servidor deve "escutar" na porta provida a você pelo primeiro  
+  argumento para seu programa.  
+ 
 
 */
 
@@ -16,19 +14,13 @@ const http = require('http');
 const fs = require('fs');
 
 const port = process.argv[2]
-const filePath = process.argv[3]
-
-let response = ""
-
-const file = fs.createReadStream(filePath, {encoding: 'utf8'})
-
-file.on('data', (data) => {
-  response += data
-})
 
 const server = http.createServer((req, res) => {
 
-  res.end(response)
+  req
+  .on('data', (chunk) => {
+    res.write(String(chunk).toLocaleUpperCase())
+  })
 
 })
 

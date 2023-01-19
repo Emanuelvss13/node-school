@@ -1,41 +1,32 @@
 /*
 
-  Escreva um programa que realize uma requisição HTTP GET em uma URL  
-  fornecida por você como o primeiro argumento na linha de comando. Pegue  
-  todos os dados ("data") do servidor (não apenas o primeiro evento "data")  
-  e então escreva duas linhas no console (stdout).  
+  Escreva um Servidor de Tempo TCP!  
    
-  A primeira linha que você vai escrever deve apenas ser um inteiro  
-  representando o número de caracteres recebidos do servidor, e a outra  
-  linha deve conter a String completa de caracteres enviados pelo servidor.
+  Seu servidor deve escutar por conexões TCP na porta fornecida pelo  
+  primeiro argumento de seu programa. Para cada conexão você deve escrever a  
+  data atual e o hora (em 24h) no formato:  
+   
+     "YYYY-MM-DD hh:mm"  
+   
+  seguido por um carácter newline (nova linha). Mês, dia, hora e minuto  
+  devem ser preenchidos com zero para terem dois inteiros. Por exemplo:  
+   
+     "2013-07-06 17:42"  
+
 
 */
 
-var http = require('http');
+var net = require('net');
 
-let urls = [process.argv[2] , process.argv[3], process.argv[4]]
+const port = process.argv[2]
 
-async function getUrl(url) {
-  let response = ""
-
-  http.get(url, (res) => {
-
-    res.setEncoding('utf8')
+const server = net.createServer(socket => {
+  const date = new Date()
   
-    res.on('data', (data) => {
-        response += data
-    })
-  
-    res.on('end', async () => {
-      console.log(response);
-    })
-  })
-}
+  const mounth = date.getMonth().toString().length === 1 ? `0${date.getMonth()+1}` : date.getMonth()
+  const day = date.getDate().toString().length === 1 ? "0"+date.getMonth() : date.getDate()
 
-async function run() {
-  for (const url of urls) {
-    await getUrl(url)
-  }
-}
+  socket.end(`${date.getFullYear()}-${mounth}-${day} ${date.getHours()}:${date.getMinutes()}\n`)
+})
 
-run()
+server.listen(port)

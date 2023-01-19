@@ -1,32 +1,35 @@
 /*
 
-  Escreva um Servidor de Tempo TCP!  
+  Escreva um  servidor HTTP que entregue o mesmo arquivo de texto para cada  
+  solicitação recebida.  
    
-  Seu servidor deve escutar por conexões TCP na porta fornecida pelo  
-  primeiro argumento de seu programa. Para cada conexão você deve escrever a  
-  data atual e o hora (em 24h) no formato:  
+  O servidor deve escutar na porta fornecida pelo primeiro argumento do seu  
+  programa.  
    
-     "YYYY-MM-DD hh:mm"  
-   
-  seguido por um carácter newline (nova linha). Mês, dia, hora e minuto  
-  devem ser preenchidos com zero para terem dois inteiros. Por exemplo:  
-   
-     "2013-07-06 17:42"  
-
+  Será fornecida a localização do arquivo para servir como segundo argumento  
+  da linha de comando. Você deve usar o método fs.createReadStream() para a  
+  stream do conteúdo do arquivo para resposta. 
 
 */
 
-var net = require('net');
+const http = require('http');
+const fs = require('fs');
 
 const port = process.argv[2]
+const filePath = process.argv[3]
 
-const server = net.createServer(socket => {
-  const date = new Date()
-  
-  const mounth = date.getMonth().toString().length === 1 ? `0${date.getMonth()+1}` : date.getMonth()
-  const day = date.getDate().toString().length === 1 ? "0"+date.getMonth() : date.getDate()
+let response = ""
 
-  socket.end(`${date.getFullYear()}-${mounth}-${day} ${date.getHours()}:${date.getMinutes()}\n`)
+const file = fs.createReadStream(filePath, {encoding: 'utf8'})
+
+file.on('data', (data) => {
+  response += data
+})
+
+const server = http.createServer((req, res) => {
+
+  res.end(response)
+
 })
 
 server.listen(port)

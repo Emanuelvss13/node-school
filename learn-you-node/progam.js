@@ -13,21 +13,29 @@
 
 var http = require('http');
 
-const url = process.argv[2]
+let urls = [process.argv[2] , process.argv[3], process.argv[4]]
 
-let response = ""
+async function getUrl(url) {
+  let response = ""
 
-http.get(url, (res) => {
+  http.get(url, (res) => {
 
-  res.setEncoding('utf8')
-
-  res.on('data', (data) => {
-      response += data
+    res.setEncoding('utf8')
+  
+    res.on('data', (data) => {
+        response += data
+    })
+  
+    res.on('end', async () => {
+      console.log(response);
+    })
   })
+}
 
-  res.on('end', () => {
-    console.log(response.length)
-    console.log(response)
-  })
+async function run() {
+  for (const url of urls) {
+    await getUrl(url)
+  }
+}
 
-})
+run()
